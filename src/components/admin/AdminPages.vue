@@ -14,6 +14,9 @@
                     <b-tab title="Vendas">
                         <VendasAdmin/>
                     </b-tab>
+                    <b-tab title="Promoçoes">
+                        <promocoesAdmin/>
+                    </b-tab>
                 </b-tabs>
             </b-card>
         </div>
@@ -25,11 +28,12 @@ import PageTitle from '../template/PageTitle'
 import ItensAdmin from './ItensAdmin'
 import LotesAdmin from './LotesAdmin'
 import VendasAdmin from './VendasAdmin'
+import PromocoesAdmin from './PromocoesAdmin'
 
 
 export default {
     name: 'AdminPages',
-    components: { PageTitle, ItensAdmin, LotesAdmin, VendasAdmin }
+    components: { PageTitle, ItensAdmin, LotesAdmin, VendasAdmin, PromocoesAdmin }
 }
 </script>
 
