@@ -13,7 +13,7 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Categoria:" label-for="produto-categoria">
-                        <b-form-input id="produto-categoria" type="text" v-model="produto.categoria" required :readonly="mode === 'remove'" 
+                        <b-form-input id="produto-categoria" type="text" v-model="produto.tipo" required :readonly="mode === 'remove'" 
                         placeholder="Informe a Categoria do Produto..." />
                     </b-form-group>
                 </b-col>
@@ -28,16 +28,16 @@
             </b-row>
             <b-row>
                 <b-col md="3" sm="2">
-                    <b-form-group label="Situação:" label-for="produto-situacao">
-                        <b-form-input id="produto-situacao" type="text" v-model="produto.situacao" required :readonly="mode === 'remove'" 
-                        placeholder="Informe a Situação do Produto..." />
+                    <b-form-group label="Descrição:" label-for="produto-descricao">
+                        <b-form-input id="produto-descricao" type="text" v-model="produto.descricao" required :readonly="mode === 'remove'" 
+                        placeholder="Informe a Descrição do Produto..." />
                     </b-form-group>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Codigo:" label-for="produto-codigo">
-                        <b-form-input id="produto-codigo" type="text" v-model="produto.codigo" required :readonly="mode === 'remove'" 
+                        <b-form-input id="produto-codigo" type="text" v-model="produto.codBarra" required :readonly="mode === 'remove'" 
                         placeholder="Informe o codigo do Produto..." />
                     </b-form-group>
                 </b-col>
@@ -70,6 +70,8 @@
 
 <script>
 import { baseApiUrl, showError } from '@/global'
+const axios = require("axios");
+
 
 export default {
     nome:'ItensAdmin',
@@ -77,9 +79,7 @@ export default {
         return {
             mode: 'save',
             produto: {},
-            produtos: [{nome: "pasta", codigo: "110", fabricante: "jj", situacao: "tem", categoria: "higiene", preco: "5,30"},
-                    {nome: "dorflex", codigo: "111", fabricante: "jj", situacao: "tem", categoria: "medicamento", preco: "66,30"},
-                    {nome: "cheetos", codigo: "112", fabricante: "jj", situacao: "tem", categoria: "alimentos" , preco: "0,30"}],
+            produtos: [],
             fields: [
                 { key: 'nome', label: 'Nome', sortable: true},
                 { key: 'categoria', label: 'Categoria', sortable: true},
@@ -90,41 +90,35 @@ export default {
             ]
         }
     },
+
+
+    created(){
+    },
+
     methods: {
         loadItens() {
-            
-            return this.produtos;
-
+            this.produtos = [];
+            axios.get("https://farmacia-cg.herokuapp.com/produtos").then(res => {
+                res.data.forEach((data) => {
+                    this.produtos.push(data);
+                })
+            });
         },
 
         reset() {
             
             this.mode = 'save'
             this.produto = {}
+            this.produtos = []
             this.loadItens()
         },
 
         save() {
-            var existe = false;
-            Array.prototype.insert = function ( index, item ) {
-                this.splice( index, 0, item );
-            };
-
-            var a = Number;
-            this.produtos.forEach(element => { 
-                if(element.codigo == this.produto.codigo){
-                    existe = true;
-                    a = this.produtos.indexOf(element);
-                    this.produtos.splice(a, 1);
-                }
-            });
-            if(!existe) {
-                this.produtos.push(this.produto);
-            } else {
-               this.produtos.insert(a, this.produto)
-            }
-        
-            this.reset();
+            axios({
+                method: 'put',
+                url: "https://farmacia-cg.herokuapp.com/produtos",
+                data: this.produto
+            }).then(this.reset());
         },
 
         remove() {
