@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 
 import Home from '@/components/home/Home'
 import AdminPages from '@/components/admin/AdminPages'
+import Auth from '@/components/auth/Auth'
+
 
 Vue.use(VueRouter)
 
@@ -10,6 +12,10 @@ const routes = [{
     name: 'home',
     path: '/',
     component: Home
+}, {
+    name: 'auth',
+    path: '/auth',
+    component: Auth
 }, {
     name: 'adminPages',
     path: '/admin',
