@@ -72,6 +72,14 @@
 import { baseApiUrl, showError } from '@/global'
 const axios = require("axios");
 
+function _isNew(produto, produtos){
+    for (let x in produtos){
+        if (x.codBarra == produto.codBarra){
+            return true;
+        }
+    }
+    return false; 
+}
 
 export default {
     nome:'ItensAdmin',
@@ -82,9 +90,9 @@ export default {
             produtos: [],
             fields: [
                 { key: 'nome', label: 'Nome', sortable: true},
-                { key: 'categoria', label: 'Categoria', sortable: true},
+                { key: 'tipo', label: 'Categoria', sortable: true},
                 { key: 'preco', label: 'Preço', sortable: true},
-                { key: 'situacao', label: 'Situação', sortable: true},
+                { key: 'descricao', label: 'Descrição', sortable: true},
                 { key: 'actions', label: 'Ações'}
 
             ]
@@ -110,26 +118,32 @@ export default {
             this.mode = 'save'
             this.produto = {}
             this.produtos = []
-            this.loadItens()
+            setTimeout(this.loadItens(), 1000)
         },
 
         save() {
-            axios({
-                method: 'put',
-                url: "https://farmacia-cg.herokuapp.com/produtos",
-                data: this.produto
-            }).then(this.reset());
+            if (_isNew(this.produto, this.produtos)){
+                axios({
+                    method: "put",
+                    url: "https://farmacia-cg.herokuapp.com/produtos",
+                    data: this.produto
+                 }).then(this.reset());
+            } else {
+                axios({
+                    method: "post",
+                    url: "https://farmacia-cg.herokuapp.com/produtos/" + this.produto.codBarra,
+                    data: this.produto
+                 }).then(this.reset());
+            }
         },
 
         remove() {
-            this.produtos.forEach(element => { 
-                if(element.codigo == this.produto.codigo){
-                    this.produtos.splice(this.produtos.indexOf(element), 1);
-                }
-             });
-            this.reset();
-
+            axios({
+                method: 'DELETE',
+                url: "https://farmacia-cg.herokuapp.com/produtos/" + this.produto.codBarra
+            }).then(this.reset());
         },
+        
         loadProduto(produto, mode = 'save') {
             this.mode = mode
             this.produto = { ...produto }
