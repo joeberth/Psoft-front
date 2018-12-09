@@ -5,7 +5,7 @@ import Home from '@/components/home/Home'
 import AdminPages from '@/components/admin/AdminPages'
 import Auth from '@/components/auth/Auth'
 
-
+import { userKey } from '@/global'
 Vue.use(VueRouter)
 
 const routes = [{
