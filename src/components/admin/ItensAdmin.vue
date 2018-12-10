@@ -77,9 +77,9 @@ export default {
         return {
             mode: 'save',
             produto: {},
-            // produtos: [{nome: "pasta", codigo: "110", fabricante: "jj", situacao: "tem", categoria: "higiene", preco: "5,30"},
-            //         {nome: "dorflex", codigo: "111", fabricante: "jj", situacao: "tem", categoria: "medicamento", preco: "66,30"},
-            //         {nome: "cheetos", codigo: "112", fabricante: "jj", situacao: "tem", categoria: "alimentos" , preco: "0,30"}],
+            produtos: [{nome: "pasta", codigo: "110", fabricante: "jj", situacao: "tem", categoria: "higiene", preco: "5,30"},
+                    {nome: "dorflex", codigo: "111", fabricante: "jj", situacao: "tem", categoria: "medicamento", preco: "66,30"},
+                    {nome: "cheetos", codigo: "112", fabricante: "jj", situacao: "tem", categoria: "alimentos" , preco: "0,30"}],
             fields: [
                 { key: 'nome', label: 'Nome', sortable: true},
                 { key: 'categoria', label: 'Categoria', sortable: true},
@@ -91,13 +91,6 @@ export default {
         }
     },
     methods: {
-        getItens() {
-            fetch('/prosutos2.json')
-                .then(resp => resp.json())
-                .then(data => this.produtos = data)
-            // return this.produtos;
-
-        },
 
         loadItens() {
             return this.produtos;
@@ -149,7 +142,6 @@ export default {
 
     },
     mounted() {
-        this.getItens()
         this.loadItens()
     }
 }
