@@ -13,8 +13,9 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Categoria:" label-for="produto-categoria">
-                        <b-form-input id="produto-categoria" type="text" v-model="produto.tipo" required :readonly="mode === 'remove'" 
-                        placeholder="Informe a Categoria do Produto..." />
+                        <select id="tipos-produto" type="Dropdown Button" v-model="produto.tipo" required :readonly="mode === 'remove'">
+                            <option v-for="option in tiposProduto" :key="option.text">{{option.text}}</option>
+                        </select>
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -88,13 +89,13 @@ export default {
             mode: 'save',
             produto: {},
             produtos: [],
+            tiposProduto: [{text: "medicamento", id:1}, {text: "alimento", id:2}, {text: "higiene", id:3}, {text: "cosmetico", id:4}],
             fields: [
                 { key: 'nome', label: 'Nome', sortable: true},
                 { key: 'tipo', label: 'Categoria', sortable: true},
                 { key: 'preco', label: 'Preço', sortable: true},
                 { key: 'descricao', label: 'Descrição', sortable: true},
                 { key: 'actions', label: 'Ações'}
-
             ]
         }
     },
@@ -108,7 +109,7 @@ export default {
             this.produtos = [];
             axios.get("https://farmacia-cg.herokuapp.com/produtos").then(res => {
                 res.data.forEach((data) => {
-                    this.produtos.push(data);
+                    this.produtos.push(data.produto);
                 })
             });
         },
@@ -127,13 +128,19 @@ export default {
                     method: "put",
                     url: "https://farmacia-cg.herokuapp.com/produtos",
                     data: this.produto
-                 }).then(this.reset());
+                 }).then(() => {
+                     alert("Cadastro realizado com sucesso")
+                     this.reset();
+                     });
             } else {
                 axios({
                     method: "post",
                     url: "https://farmacia-cg.herokuapp.com/produtos/" + this.produto.codBarra,
                     data: this.produto
-                 }).then(this.reset());
+                 }).then(() => {
+                         alert("Alteração realizada!")
+                         this.reset();
+                 });
             }
         },
 
@@ -141,7 +148,10 @@ export default {
             axios({
                 method: 'DELETE',
                 url: "https://farmacia-cg.herokuapp.com/produtos/" + this.produto.codBarra
-            }).then(this.reset());
+            }).then(() => {
+                         alert("Remoção realizada!")
+                         this.reset();
+                 });
         },
         
         loadProduto(produto, mode = 'save') {
