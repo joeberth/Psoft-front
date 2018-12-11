@@ -13,7 +13,7 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Validade:" label-for="lote-validade">
-                        <b-form-input id="lote-validade" type="text" v-model="lote.validade" required :readonly="mode === 'remove'" 
+                        <b-form-input id="lote-validade" type="text" v-model="lote.dataValidade" required :readonly="mode === 'remove'" 
                         placeholder="Informe a Validade do lote..." />
                     </b-form-group>
                 </b-col>
@@ -21,7 +21,7 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Quantidade Inicial:" label-for="lote-qinicial">
-                        <b-form-input id="lote-qinicial" type="text" v-model="lote.qinicial" required :readonly="mode === 'remove'" 
+                        <b-form-input id="lote-qinicial" type="text" v-model="lote.quantidadeInicial" required :readonly="mode === 'remove'" 
                         placeholder="Informe a quantidade inicial do lote..." />
                     </b-form-group>
                 </b-col>
@@ -29,7 +29,7 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Código do produto:" label-for="lote-codbarra">
-                        <b-form-input id="lote-codbarra" type="text" v-model="lote.codbarra" required :readonly="mode === 'remove'" 
+                        <b-form-input id="lote-codbarra" type="text" v-model="lote.codBarra" required :readonly="mode === 'remove'" 
                         placeholder="Informe o Código do produto..." />
                     </b-form-group>
                 </b-col>
@@ -54,6 +54,7 @@
 
 <script>
 import { baseApiUrl, showError } from '@/global'
+const axios = require("axios");
 
 export default {
     nome:'LotesAdmin',
@@ -90,26 +91,18 @@ export default {
         },
 
         save() {
-            var existe = false;
-            Array.prototype.insert = function ( index, item ) {
-                this.splice( index, 0, item );
-            };
-
-            var a = Number;
-            this.lotes.forEach(element => { 
-                if(element.numero == this.lote.numero){
-                    existe = true;
-                    a = this.lotes.indexOf(element);
-                    this.lotes.splice(a, 1);
-                }
+            axios.get(`https://farmacia-cg.herokuapp.com/produtos/` + this.lote.codBarra).then(res => {
+                this.lote.produto = res.data.produto;
+            }).then(() => {
+                axios({
+                        method: "put",
+                        url: `https://farmacia-cg.herokuapp.com/produtos/${this.lote.codBarra}/lote`,
+                        data: this.lote
+                    }).then(() => {
+                        alert("Cadastro de lote realizado com sucesso")
+                        this.reset();
+                        })
             });
-            if(!existe) {
-                this.lotes.push(this.lote);
-            } else {
-               this.lotes.insert(a, this.lote)
-            }
-        
-            this.reset();
         },
 
         remove() {

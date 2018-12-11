@@ -77,6 +77,7 @@ export default {
                 { key: 'dataInicio', label: 'Data Inicial', sortable: true},
                 { key: 'dataTermino', label: 'Data Final', sortable: true},
                 { key: 'tipoProduto', label: 'Tipo de desconto', sortable: true},
+                { key: 'ocorrendo', label: 'Ativa', sortable: true},
                 { key: 'actions', label: 'Ações'}
             ]
         }
