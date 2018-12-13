@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <PageTitle icon="fa fa-home" main="Dashboard"
+        <!-- <PageTitle icon="fa fa-home" main="Dashboard"
             sub="CCC Pharma" />
         <div class="stats">
             <Stat title="Adicionar item" 
@@ -11,11 +11,13 @@
                 icon="fa fa-folder" color="#3282cd" />
             <Stat title="Gerenciar Vendas" 
                 icon="fa fa-sellsy" color="aqua" />
-        </div>
+        </div> -->
+        <Search />
     </div>
 </template>
 
 <script>
+import Search from '../template/Search'
 import PageTitle from '../template/PageTitle'
 import Stat from './Stat'
 import axios from 'axios'
@@ -24,7 +26,7 @@ import { baseApiUrl } from '@/global'
 
 export default {
     name: 'Home',
-    components: { PageTitle, Stat },
+    components: { PageTitle, Stat, Search },
     
 }
 </script>
