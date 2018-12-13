@@ -12,15 +12,6 @@
             </b-row>
             <b-row>
                 <b-col md="3" sm="2">
-                    <b-form-group label="Categoria:" label-for="produto-categoria">
-                        <select id="tipos-produto" type="Dropdown Button" v-model="produto.tipo" required :readonly="mode === 'remove'">
-                            <option v-for="option in tiposProduto" :key="option.text">{{option.text}}</option>
-                        </select>
-                    </b-form-group>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col md="3" sm="2">
                     <b-form-group label="Preço:" label-for="produto-preço">
                         <b-form-input id="produto-preco" type="text" v-model="produto.preco" required :readonly="mode === 'remove'" 
                         placeholder="Informe o Preço do Produto..." />
@@ -48,6 +39,15 @@
                     <b-form-group label="fabricante:" label-for="produto-fabricante">
                         <b-form-input id="produto-fabricante" type="text" v-model="produto.fabricante" required :readonly="mode === 'remove'" 
                         placeholder="Informe o Fabricante do Produto..." />
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="3" sm="2">
+                    <b-form-group label="Categoria:" label-for="produto-categoria">
+                        <select id="tipos-produto" type="Dropdown Button" v-model="produto.tipo" required :readonly="mode === 'remove'">
+                            <option v-for="option in tiposProduto" :key="option.text">{{option.text}}</option>
+                        </select>
                     </b-form-group>
                 </b-col>
             </b-row>

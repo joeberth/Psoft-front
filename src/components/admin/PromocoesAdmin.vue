@@ -3,17 +3,9 @@
         <b-form>
             <input id="promocao-nome" type="hidden" v-model="promocao.categoria"/>
             <b-row>
-                <b-col md="6" sm="12">
-                    <b-form-group label="Categoria:" label-for="promocao-categoria">
-                        <b-form-input id="promocao-categoria" type="text" v-model="promocao.categoria" required :readonly="mode === 'remove'" 
-                        placeholder="Informe a categoria do produto..." />
-                    </b-form-group>
-                </b-col>
-            </b-row>
-            <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Data início:" label-for="promocao-di">
-                        <b-form-input id="promocao-di" type="text" v-model="promocao.di" required :readonly="mode === 'remove'" 
+                        <b-form-input id="promocao-di" type="text" v-model="promocao.dataInicio" required :readonly="mode === 'remove'" 
                         placeholder="Informe a data inicial da promocao..." />
                     </b-form-group>
                 </b-col>
@@ -21,7 +13,7 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Data Final:" label-for="promocao-df">
-                        <b-form-input id="promocao-df" type="text" v-model="promocao.df" required :readonly="mode === 'remove'" 
+                        <b-form-input id="promocao-df" type="text" v-model="promocao.dataTermino" required :readonly="mode === 'remove'" 
                         placeholder="Informe a data final da promocao..." />
                     </b-form-group>
                 </b-col>
@@ -29,13 +21,21 @@
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Tipo de desconto" label-for="promocao-tipos">
-                        <select id="promocao-tipos" type="Dropdown Button" v-model="tipo" required :readonly="mode === 'remove'">
-                            <option v-for="option in tipos" :key="option.text">{{option.text}}</option>
+                        <select id="promocao-tipos" type="Dropdown Button" v-model="promocao.tipoDesconto" required :readonly="mode === 'remove'">
+                            <option v-for="option in tiposDesconto" :key="option.text">{{option.text}}</option>
                         </select>
                     </b-form-group>
                 </b-col>
+            </b-row>
 
-
+            <b-row>
+                <b-col md="3" sm="2">
+                    <b-form-group label="Categoria:" label-for="produto-categoria">
+                        <select id="tipos-produto" type="Dropdown Button" v-model="promocao.tipoProduto" required :readonly="mode === 'remove'">
+                            <option v-for="option in tiposProduto" :key="option.text">{{option.text}}</option>
+                        </select>
+                    </b-form-group>
+                </b-col>
             </b-row>
             <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
             <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
@@ -57,6 +57,7 @@
 
 <script>
 import { baseApiUrl, showError } from '@/global'
+const axios = require("axios");
 
 
 
@@ -67,24 +68,28 @@ export default {
         return {
             mode: 'save',
             tipo: "Sem desconto",
-            tipos:[{text: "Sem desconto", id:1}, {text: "Bom desconto", id:2}, {text: "Ótimo desconto", id:3}, {text: "Super Desconto", id:4}],
+            tiposDesconto:[{text: "bom desconto", id:1}, {text: "otimo desconto", id:2}, {text: "super desconto", id:3}],
+            tiposProduto: [{text: "medicamento", id:1}, {text: "alimento", id:2}, {text: "higiene", id:3}, {text: "cosmetico", id:4}],
             promocao: {},
-            promocoes: [{categoria: "medicamentos", di: "01/02/2019", df: "01/02/2019", tipos: "Sem Desconto"},
-                    {categoria: "medicamentos", di: "01/02/2019", df: "01/02/2019", tipos: "Sem Desconto"},
-                    {categoria: "medicamentos", di: "01/02/2019", df: "01/02/2019", tipos: "Sem Desconto"}],
+            promocoes: [],
             fields: [
-                { key: 'categoria', label: 'Categoria', sortable: true},
-                { key: 'di', label: 'Data Inicial', sortable: true},
-                { key: 'df', label: 'Data Final', sortable: true},
-                { key: 'tipos', label: 'Tipo de desconto', sortable: true},
+                { key: 'tipoDesconto', label: 'Categoria', sortable: true},
+                { key: 'dataInicio', label: 'Data Inicial', sortable: true},
+                { key: 'dataTermino', label: 'Data Final', sortable: true},
+                { key: 'tipoProduto', label: 'Tipo de desconto', sortable: true},
+                { key: 'ocorrendo', label: 'Ativa', sortable: true},
                 { key: 'actions', label: 'Ações'}
-
             ]
         }
     },
     methods: {
         loadPromocoes() {
-            return this.promocoes;
+            this.promocoes = [];
+            axios.get("https://farmacia-cg.herokuapp.com/admin/promocoes").then(res => {
+                res.data.forEach((data) => {
+                    this.promocoes.push(data);
+                })
+            });
 
         },
 
@@ -95,37 +100,20 @@ export default {
         },
 
         save() {
-            var existe = false;
-            Array.prototype.insert = function ( index, item ) {
-                this.splice( index, 0, item );
-            };
-
-            var a = Number;
-            this.promocoes.forEach(element => { 
-                if(element.categoria == this.promocao.categoria){
-                    existe = true;
-                    a = this.promocoes.indexOf(element);
-                    this.promocoes.splice(a, 1);
-                }
-            });
-            if(!existe) {
-                this.promocoes.push(this.promocao);
-            } else {
-               this.promocoes.insert(a, this.promocao)
-            }
-        
-            this.reset();
+            axios({
+                    method: "put",
+                    url: "https://farmacia-cg.herokuapp.com/admin/promocoes",
+                    data: this.promocao
+                 }).then(() => {
+                     alert("Promoção cadastrada com sucesso!")
+                     this.reset();
+                 });
         },
 
         remove() {
-            this.promocoes.forEach(element => { 
-                if(element.categoria == this.promocao.categoria){
-                    this.promocoes.splice(this.promocoes.indexOf(element), 1);
-                }
-             });
-            this.reset();
-
+            alert("Impossível remover promoções por hora!");
         },
+        
         loadPromocao(promocao, mode = 'save') {
             this.mode = mode
             this.promocao = { ...promocao }
