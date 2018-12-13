@@ -116,6 +116,9 @@ export default {
             this.venda = { ...venda }
         }
 
+   
+
+
     },
     mounted() {
         this.loadVendas()
