@@ -4,7 +4,7 @@
             sub="Cadastros & Cia" />
         <div class="admin-pages-tabs">
             <b-card no-body>
-                <b-tabs card>
+                <b-tabs card v-model="tabIndex">
                     <b-tab class="itens" title="Itens" active>            
                     </b-tab>
                     <ItensAdmin @changeLote="changeLote"></ItensAdmin>
@@ -35,13 +35,15 @@ import PromocoesAdmin from './PromocoesAdmin'
 
 export default {
     name: 'AdminPages',
+    data: function() {
+       return {tabIndex: 0};
+    },
+
     components: { PageTitle, ItensAdmin, LotesAdmin, VendasAdmin, PromocoesAdmin },
     methods: {
         changeLote() {
-            console.log('aki entra')
-            console.log(document.querySelector('b-tabs'))
-            let a = document.querySelectorAll('b-tab')
-            a[1].active = true;
+            this.tabIndex = 1;
+           
         }
     }
 }

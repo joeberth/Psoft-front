@@ -125,7 +125,6 @@ export default {
         },
 
         avisaLote() {
-            console.log('aki entrou')
              this.$emit('changeLote');
         },
 
