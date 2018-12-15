@@ -91,10 +91,9 @@ export default {
         }
     },
     methods: {
-        loadItens() {
-            
-            return this.produtos;
 
+        loadItens() {
+            return this.produtos;
         },
 
         reset() {
