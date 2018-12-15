@@ -105,7 +105,9 @@ export default {
     },
 
     methods: {
+
         loadItens() {
+
             this.produtos = [];
             axios.get("https://farmacia-cg.herokuapp.com/produtos").then(res => {
                 res.data.forEach((data) => {
