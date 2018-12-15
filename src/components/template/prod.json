@@ -1,3 +1,4 @@
-[{"nome": "pasta", "situacao": "tem",  "preco": "5,30", "tipo": "higiene"},
-    {"nome": "dorflex",  "situacao": "tem",  "preco": "66,30", "tipo": "medicamento"},
-    {"nome": "cheetos", "situacao": "tem", "preco": "0,30", "tipo": "comida"}]
+[{"nome": "pasta", "quantidade": 32,  "preco": "5,30", "tipo": "higiene"},
+    {"nome": "dorflex",  "quantidade": 17,  "preco": "66,30", "tipo": "medicamento"},
+    {"nome": "cheetos", "quantidade": 2, "preco": "0,30", "tipo": "comida"},
+    {"nome": "ração pra gato feliz", "quantidade": 0, "preco": "19,25", "tipo": "comida"}]

@@ -151,7 +151,10 @@ export default {
             }).then(() => {
                          alert("Remoção realizada!")
                          this.reset();
-                 });
+                 })
+            .catch(
+                alert("Erro ao deletar produto!")
+            );
         },
         
         loadProduto(produto, mode = 'save') {
