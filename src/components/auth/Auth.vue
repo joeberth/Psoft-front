@@ -2,6 +2,7 @@
     <div class="auth-content">
         <div class="auth-modal">
             <img src="@/assets/joy.png" width="200" alt="Logo" />
+
            <div class="auth-title">{{ showSignup ? 'Cadastro' : 'Login' }}</div>
 
             <input v-if="showSignup" v-model="user.name" type="text" placeholder="Nome">
@@ -32,6 +33,7 @@
              showSignup: false,
              user: {}
          }
+
      },
      methods: {
          make_base_auth(user, password) { var tok = user + ':' + password; return ("Basic " + btoa(tok)); },

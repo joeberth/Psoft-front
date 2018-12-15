@@ -54,6 +54,7 @@
             <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
             <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
             <b-button class="ml-2" @click="reset">Cancelar</b-button>
+            <b-button class="ml-2" @click.stop="avisaLote">Adicionar Lote</b-button>
         </b-form>
         <hr>
         <b-table hover striped :items="produtos" :fields="fields">
@@ -71,6 +72,7 @@
 
 <script>
 import { baseApiUrl, showError } from '@/global'
+
 const axios = require("axios");
 
 function _isNew(produto, produtos){
@@ -123,6 +125,12 @@ export default {
             this.produtos = []
             setTimeout(this.loadItens(), 1000)
         },
+
+        avisaLote() {
+             this.$emit('changeLote');
+        },
+
+
 
         save() {
             if (_isNew(this.produto, this.produtos)){

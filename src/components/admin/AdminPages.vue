@@ -4,11 +4,13 @@
             sub="Cadastros & Cia" />
         <div class="admin-pages-tabs">
             <b-card no-body>
-                <b-tabs card>
-                    <b-tab title="Itens" active>
-                        <ItensAdmin/>
+                <b-tabs card v-model="tabIndex">
+                    <b-tab class="itens" title="Itens" active>            
                     </b-tab>
-                    <b-tab title="Lotes">
+                    <ItensAdmin @changeLote="changeLote"></ItensAdmin>
+                    
+                    
+                    <b-tab  class="lotes" title="Lotes">
                         <LotesAdmin/>
                     </b-tab>
                     <b-tab title="Vendas">
@@ -33,7 +35,17 @@ import PromocoesAdmin from './PromocoesAdmin'
 
 export default {
     name: 'AdminPages',
-    components: { PageTitle, ItensAdmin, LotesAdmin, VendasAdmin, PromocoesAdmin }
+    data: function() {
+       return {tabIndex: 0};
+    },
+
+    components: { PageTitle, ItensAdmin, LotesAdmin, VendasAdmin, PromocoesAdmin },
+    methods: {
+        changeLote() {
+            this.tabIndex = 1;
+           
+        }
+    }
 }
 </script>
 
