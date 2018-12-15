@@ -36,7 +36,8 @@
      },
      methods: {
          signin() {
-             axios.post(`${baseApiUrl}/signin`, this.user)
+             console.log(this.user)
+             axios.post(`${baseApiUrl}/protected/conta`, this.user)
                 .then(res => {
                     this.$store.commit('setUser', res.data)
                     localStorage.setItem(userKey, JSON.stringify(res.data))
@@ -45,6 +46,7 @@
                 .catch(showError)
          },
          signup() {
+            console.log(this.user)
             axios.post(`${baseApiUrl}/signup`, this.user)
                 .then(() => {
                     this.$toasted.global.defaultSuccess()
