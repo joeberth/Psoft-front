@@ -23,8 +23,7 @@
 
  
  <script>
- import { baseApiUrl, showError, userKey} from '@/global'
- import axios from 'axios'
+ import { baseApiUrl, showError, userKey, axios} from '@/global'
 
  export default {
      name: 'Auth',
@@ -38,18 +37,23 @@
          make_base_auth(user, password) { var tok = user + ':' + password; return ("Basic " + btoa(tok)); },
          signin() {
              console.log(this.user)
+             this.user.token = "Basic " + btoa(this.user.email+ ":" + this.user.password);
              axios({
                  
                  url: `${baseApiUrl}protected/conta`,
                  method: "get",
                  headers:{
-                     'Authorization': "Basic " + btoa(this.user.email+ ":" + this.user.password)
+                     'Authorization': this.user.token
                  }
              })
                 .then(res => {
+                    axios.defaults.headers.common['Authorization'] = this.user.token;
                     this.$router.push({ path: '/admin'})
                 })
-                .catch(showError)
+                .catch(() => {
+                    this.user.token = "";
+                    showError
+                    })
          },
          signup() {
             console.log(this.user)
