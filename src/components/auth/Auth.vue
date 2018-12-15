@@ -2,15 +2,29 @@
     <div class="auth-content">
         <div class="auth-modal">
             <img src="@/assets/joy.png" width="200" alt="Logo" />
-            <hr>
 
-     </div>
+           <div class="auth-title">{{ showSignup ? 'Cadastro' : 'Login' }}</div>
+
+            <input v-if="showSignup" v-model="user.name" type="text" placeholder="Nome">
+            <input v-model="user.email" name="email" type="text" placeholder="E-mail">
+            <input v-model="user.password" name="password" type="password" placeholder="Senha">
+            <input v-if="showSignup" v-model="user.confirmPassword"
+                type="password" placeholder="Confirme a Senha">
+
+            <button v-if="showSignup" @click="signup">Registrar</button>
+            <button v-else @click="signin">Entrar</button>
+
+            <a href @click.prevent="showSignup = !showSignup">
+                <span v-if="showSignup">Já tem cadastro? Acesse o Login!</span>
+                <span v-else>Não tem cadastro? Registre-se aqui!</span>
+            </a>
+        </div>
     </div>
- </template>
+</template>
+
  
  <script>
- import { baseApiUrl, showError, userKey} from '@/global'
- import axios from 'axios'
+ import { baseApiUrl, showError, userKey, axios} from '@/global'
 
  export default {
      name: 'Auth',
@@ -19,7 +33,42 @@
              showSignup: false,
              user: {}
          }
-     }
+
+     },
+     methods: {
+         make_base_auth(user, password) { var tok = user + ':' + password; return ("Basic " + btoa(tok)); },
+         signin() {
+             console.log(this.user)
+             this.user.token = "Basic " + btoa(this.user.email+ ":" + this.user.password);
+             axios({
+                 
+                 url: `${baseApiUrl}protected/conta`,
+                 method: "get",
+                 headers:{
+                     'Authorization': this.user.token
+                 }
+             })
+                .then(res => {
+                    axios.defaults.headers.common['Authorization'] = this.user.token;
+                    this.$router.push({ path: '/admin'})
+                })
+                .catch(() => {
+                    this.user.token = "";
+                    showError
+                    })
+         },
+         signup() {
+            console.log(this.user)
+            axios.post(`${baseApiUrl}/signup`, this.user)
+                .then(() => {
+                    this.$toasted.global.defaultSuccess()
+                    this.user = {}
+                    this.showSignup = false
+                })
+                .catch(showError)
+        }
+        
+     } 
 
  }
  </script>
