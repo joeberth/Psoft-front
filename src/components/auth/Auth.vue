@@ -35,13 +35,19 @@
          }
      },
      methods: {
+         make_base_auth(user, password) { var tok = user + ':' + password; return ("Basic " + btoa(tok)); },
          signin() {
              console.log(this.user)
-             axios.post(`${baseApiUrl}/protected/conta`, this.user)
+             axios({
+                 
+                 url: `${baseApiUrl}protected/conta`,
+                 method: "get",
+                 headers:{
+                     'Authorization': "Basic " + btoa(this.user.email+ ":" + this.user.password)
+                 }
+             })
                 .then(res => {
-                    this.$store.commit('setUser', res.data)
-                    localStorage.setItem(userKey, JSON.stringify(res.data))
-                    this.$router.push({ path: '/'})
+                    this.$router.push({ path: '/admin'})
                 })
                 .catch(showError)
          },
@@ -55,6 +61,7 @@
                 })
                 .catch(showError)
         }
+        
      } 
 
  }
