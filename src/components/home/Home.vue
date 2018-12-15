@@ -12,12 +12,20 @@
             <Stat title="Gerenciar Vendas" 
                 icon="fa fa-sellsy" color="aqua" />
         </div> -->
+
         <Itens></Itens>
+
+        <Search />
+
     </div>
 </template>
 
 <script>
+
 import Itens from '../template/Itens'
+
+import Search from '../template/Search'
+
 import PageTitle from '../template/PageTitle'
 import Stat from './Stat'
 import axios from 'axios'
@@ -26,7 +34,8 @@ import { baseApiUrl } from '@/global'
 
 export default {
     name: 'Home',
-    components: { PageTitle, Stat, Itens},
+
+    components: { PageTitle, Stat, Search, Itens},
     
 }
 </script>

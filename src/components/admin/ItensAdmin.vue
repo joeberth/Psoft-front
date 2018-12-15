@@ -12,14 +12,6 @@
             </b-row>
             <b-row>
                 <b-col md="3" sm="2">
-                    <b-form-group label="Categoria:" label-for="produto-categoria">
-                        <b-form-input id="produto-categoria" type="text" v-model="produto.categoria" required :readonly="mode === 'remove'" 
-                        placeholder="Informe a Categoria do Produto..." />
-                    </b-form-group>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col md="3" sm="2">
                     <b-form-group label="Preço:" label-for="produto-preço">
                         <b-form-input id="produto-preco" type="text" v-model="produto.preco" required :readonly="mode === 'remove'" 
                         placeholder="Informe o Preço do Produto..." />
@@ -28,16 +20,16 @@
             </b-row>
             <b-row>
                 <b-col md="3" sm="2">
-                    <b-form-group label="Situação:" label-for="produto-situacao">
-                        <b-form-input id="produto-situacao" type="text" v-model="produto.situacao" required :readonly="mode === 'remove'" 
-                        placeholder="Informe a Situação do Produto..." />
+                    <b-form-group label="Descrição:" label-for="produto-descricao">
+                        <b-form-input id="produto-descricao" type="text" v-model="produto.descricao" required :readonly="mode === 'remove'" 
+                        placeholder="Informe a Descrição do Produto..." />
                     </b-form-group>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col md="3" sm="2">
                     <b-form-group label="Codigo:" label-for="produto-codigo">
-                        <b-form-input id="produto-codigo" type="text" v-model="produto.codigo" required :readonly="mode === 'remove'" 
+                        <b-form-input id="produto-codigo" type="text" v-model="produto.codBarra" required :readonly="mode === 'remove'" 
                         placeholder="Informe o codigo do Produto..." />
                     </b-form-group>
                 </b-col>
@@ -47,6 +39,15 @@
                     <b-form-group label="fabricante:" label-for="produto-fabricante">
                         <b-form-input id="produto-fabricante" type="text" v-model="produto.fabricante" required :readonly="mode === 'remove'" 
                         placeholder="Informe o Fabricante do Produto..." />
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col md="3" sm="2">
+                    <b-form-group label="Categoria:" label-for="produto-categoria">
+                        <select id="tipos-produto" type="Dropdown Button" v-model="produto.tipo" required :readonly="mode === 'remove'">
+                            <option v-for="option in tiposProduto" :key="option.text">{{option.text}}</option>
+                        </select>
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -70,6 +71,16 @@
 
 <script>
 import { baseApiUrl, showError } from '@/global'
+const axios = require("axios");
+
+function _isNew(produto, produtos){
+    for (let x in produtos){
+        if (x.codBarra == produto.codBarra){
+            return true;
+        }
+    }
+    return false; 
+}
 
 export default {
     nome:'ItensAdmin',
@@ -77,64 +88,74 @@ export default {
         return {
             mode: 'save',
             produto: {},
-            produtos: [{nome: "pasta", codigo: "110", fabricante: "jj", situacao: "tem", categoria: "higiene", preco: "5,30"},
-                    {nome: "dorflex", codigo: "111", fabricante: "jj", situacao: "tem", categoria: "medicamento", preco: "66,30"},
-                    {nome: "cheetos", codigo: "112", fabricante: "jj", situacao: "tem", categoria: "alimentos" , preco: "0,30"}],
+            produtos: [],
+            tiposProduto: [{text: "medicamento", id:1}, {text: "alimento", id:2}, {text: "higiene", id:3}, {text: "cosmetico", id:4}],
             fields: [
                 { key: 'nome', label: 'Nome', sortable: true},
-                { key: 'categoria', label: 'Categoria', sortable: true},
+                { key: 'tipo', label: 'Categoria', sortable: true},
                 { key: 'preco', label: 'Preço', sortable: true},
-                { key: 'situacao', label: 'Situação', sortable: true},
+                { key: 'descricao', label: 'Descrição', sortable: true},
                 { key: 'actions', label: 'Ações'}
-
             ]
         }
     },
+
+
+    created(){
+    },
+
     methods: {
 
         loadItens() {
-            return this.produtos;
+
+            this.produtos = [];
+            axios.get("https://farmacia-cg.herokuapp.com/produtos").then(res => {
+                res.data.forEach((data) => {
+                    this.produtos.push(data.produto);
+                })
+            });
         },
 
         reset() {
             
             this.mode = 'save'
             this.produto = {}
-            this.loadItens()
+            this.produtos = []
+            setTimeout(this.loadItens(), 1000)
         },
 
         save() {
-            var existe = false;
-            Array.prototype.insert = function ( index, item ) {
-                this.splice( index, 0, item );
-            };
-
-            var a = Number;
-            this.produtos.forEach(element => { 
-                if(element.codigo == this.produto.codigo){
-                    existe = true;
-                    a = this.produtos.indexOf(element);
-                    this.produtos.splice(a, 1);
-                }
-            });
-            if(!existe) {
-                this.produtos.push(this.produto);
+            if (_isNew(this.produto, this.produtos)){
+                axios({
+                    method: "put",
+                    url: "https://farmacia-cg.herokuapp.com/produtos",
+                    data: this.produto
+                 }).then(() => {
+                     alert("Cadastro realizado com sucesso")
+                     this.reset();
+                     });
             } else {
-               this.produtos.insert(a, this.produto)
+                axios({
+                    method: "post",
+                    url: "https://farmacia-cg.herokuapp.com/produtos/" + this.produto.codBarra,
+                    data: this.produto
+                 }).then(() => {
+                         alert("Alteração realizada!")
+                         this.reset();
+                 });
             }
-        
-            this.reset();
         },
 
         remove() {
-            this.produtos.forEach(element => { 
-                if(element.codigo == this.produto.codigo){
-                    this.produtos.splice(this.produtos.indexOf(element), 1);
-                }
-             });
-            this.reset();
-
+            axios({
+                method: 'DELETE',
+                url: "https://farmacia-cg.herokuapp.com/produtos/" + this.produto.codBarra
+            }).then(() => {
+                         alert("Remoção realizada!")
+                         this.reset();
+                 });
         },
+        
         loadProduto(produto, mode = 'save') {
             this.mode = mode
             this.produto = { ...produto }
